@@ -4,8 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-
 import java.util.UUID;
 
 /**
@@ -13,7 +11,6 @@ import java.util.UUID;
  *
  * @author eric
  */
-@ConditionalOnProperty(prefix = "spring.rabbitmq.easy-mq", name = "enabled", havingValue = "true")
 @Slf4j
 public class MessageSender {
 

@@ -28,7 +28,7 @@ import java.util.Map;
  */
 @Configuration
 @EnableConfigurationProperties(EasyMqProperties.class)
-@ConditionalOnProperty(prefix = "spring.rabbitmq.easy-mq", name = "enabled", havingValue = "true")
+@ConditionalOnProperty(prefix = "spring.rabbitmq.easy-mq", name = "enabled", havingValue = "true", matchIfMissing = true)
 public class EasyRabbitMQConfig {
 
 	@Value("${spring.rabbitmq.host:localhost}")

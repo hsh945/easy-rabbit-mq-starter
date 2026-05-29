@@ -1,6 +1,5 @@
 package io.github.hsh945.rabbitmq;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.util.CollectionUtils;
 
 import java.util.HashMap;
@@ -12,7 +11,6 @@ import java.util.Map;
  *
  * @author eric
  */
-@ConditionalOnProperty(prefix = "spring.rabbitmq.easy-mq", name = "enabled", havingValue = "true")
 public class MessageHandlerRegistry {
 
 	private final Map<String, MessageHandler<?>> handlerMap = new HashMap<>();
