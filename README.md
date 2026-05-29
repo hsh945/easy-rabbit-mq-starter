@@ -1,7 +1,7 @@
 # 🚀 Easy-Rabbit-MQ-Starter
 
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.txt)
-[![Maven Central](https://img.shields.io/maven-central/v/io.github.hsh945/easy-rabbit-mq-starter.svg?label=Maven%20Central)](https://central.sonatype.com/)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.hsh945/easy-rabbit-mq-starter.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/io.github.hsh945/easy-rabbit-mq-starter)
 [![JDK](https://img.shields.io/badge/JDK-17%2B-orange.svg)](https://www.oracle.com/java/technologies/downloads/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-green.svg)](https://spring.io/projects/spring-boot)
 
@@ -61,7 +61,7 @@ graph TD
 <dependency>
     <groupId>io.github.hsh945</groupId>
     <artifactId>easy-rabbit-mq-starter</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.2</version>
 </dependency>
 ```
 
@@ -78,20 +78,25 @@ spring:
     password: guest # 修改为你的密码
     # --- Easy MQ 核心配置 ---
     easy-mq:
-      enabled: true                     # 开启 Starter 功能
+      enabled: true                     # 缺省值改为 true 了，引入依赖则视为启用，false 可关闭
       queue: order-service-queue        # 当前子系统独有的消费队列名 (只生产不消费的模块可不配)
-      exchange: easy-exchange           # 默认业务交换机 (默认: easy-exchange)
-      delayExchange: easy-exchange-delay # 默认延时交换机 (默认: easy-exchange-delay)
-      dlxExchange: easy-exchange-dlx     # 默认死信交换机 (默认: easy-exchange-dlx)
+      # exchange: easy-exchange           # 默认业务交换机 (默认: easy-exchange)
+      # delayExchange: easy-exchange-delay # 默认延时交换机 (默认: easy-exchange-delay)
+      # dlxExchange: easy-exchange-dlx     # 默认死信交换机 (默认: easy-exchange-dlx)
     # --- 统一开启 Spring AMQP 自动 Ack 与本地重试 (高可用最佳实践) ---
     listener:
       simple:
         acknowledge-mode: auto
         retry:
           enabled: true
-          max-attempts: 3
-          initial-interval: 2000ms
-          multiplier: 2
+          max-attempts: 3 # 总共尝试 3 次（1 次原始执行 + 2 次重试）
+          initial-interval: 2000ms # 第一次重试前等待 2 秒
+          multiplier: 2 # 重试间隔倍数（2秒 → 4秒 → 8秒 → 16秒，这样一直翻倍）
+
+        # 当前上面这个配置现象是 一共执行 3 次（1 次原始执行 + 2 次重试）
+        # 第 1 次消费失败 → 等待 2 秒 后重试
+        # 第 2 次失败 → 等待 4 秒 后重试
+        # 第 3 次失败 → 进入死信队列或记录失败日志
 ```
 
 ---
